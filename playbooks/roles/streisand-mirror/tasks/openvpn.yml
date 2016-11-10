@@ -3,25 +3,32 @@
   include_vars: openvpn.yml
 
 - name: Make the directory where OpenVPN's mirrored files will be stored
-  file: path={{ openvpn_mirror_location }}
-        owner=www-data
-        group=www-data
-        mode=755
-        state=directory
+  file:
+    path: "{{ openvpn_mirror_location }}"
+    owner: www-data
+    group: www-data
+    mode: 0755
+    state: directory
 
-- name: Mirror Tunnelblick Stable and Beta clients for OS X. The Beta version is required for Mavericks and Yosemite users.
-  get_url: url={{ item.url }}
-           dest={{ openvpn_mirror_location }}
-           sha256sum={{ item.checksum }}
-           owner=www-data
-           group=www-data
-           mode=644
-  with_items: tunnelblick_download_urls
+- block:
+    - name: Mirror Tunnelblick for OS X
+      get_url:
+        url: "{{ tunnelblick_url }}"
+        dest: "{{ openvpn_mirror_location }}"
+        checksum: "{{ tunnelblick_checksum }}"
+        owner: www-data
+        group: www-data
+        mode: 0644
 
-- include: download-and-verify.yml
-           project_name="OpenVPN Community"
-           project_signer="Samuli Seppanen"
-           project_signing_key="{{ openvpn_samuli_seppanen_key_id }}"
-           project_expected_fingerprint="{{ openvpn_samuli_seppanen_expected_fingerprint }}"
-           project_mirror_location="{{ openvpn_mirror_location }}"
-           project_download_urls="{{ openvpn_download_urls }}"
+    - include: download-and-verify.yml
+      vars:
+        project_name: "OpenVPN Community"
+        project_signer: "Samuli Seppanen"
+        project_signing_key: "{{ openvpn_samuli_seppanen_key_id }}"
+        project_expected_fingerprint: "{{ openvpn_samuli_seppanen_expected_fingerprint }}"
+        project_mirror_location: "{{ openvpn_mirror_location }}"
+        project_download_urls: "{{ openvpn_download_urls }}"
+  rescue:
+    - name: "{{ streisand_mirror_warning }}"
+      pause:
+        seconds: "{{ streisand_mirror_warning_seconds }}"

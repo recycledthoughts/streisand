@@ -30,27 +30,30 @@ For security reasons, OpenVPN clients typically have their own unique certificat
 {% for client in openvpn_clients %}
    * [{{ client }}](/openvpn/{{ client }}/{{ openvpn_direct_profile_filename }})
 {% endfor %}
+   * *[Alternate profiles](#sslh-profiles) are available if you are on a network that only allows access to ports `80` and `443`.*
+   * *[UDP profiles](#udp-profiles) are also available.*
 1. Open the *config* directory that is located in the Destination Folder. For most users, this will either be in *C:\Program Files\OpenVPN\config* or *C:\Program Files (x86)\OpenVPN\config*. You will see a single README file in this directory.
 1. Drag and drop the downloaded `{{ openvpn_direct_profile_filename }}` file to this location alongside the README.
 1. Right-click on the OpenVPN icon in your taskbar and choose *Connect*.
 1. You will see a log scroll by as the connection is established, followed by a taskbar notification indicating your assigned IP.
-1. Success! You can verify that your traffic is being routed properly by visiting the Tor Project's check page, [Are you using Tor?](https://check.torproject.org/) It should say *Your IP address appears to be: {{ streisand_ipv4_address }}*.
+1. Success! You can verify that your traffic is being routed properly by [looking up your IP address on Google](https://encrypted.google.com/search?hl=en&q=ip%20address). It should say *Your public IP address is {{ streisand_ipv4_address }}*.
 
 <a name="osx"></a>
 ### OS X ###
 1. Download and open [Tunnelblick](/mirror/#openvpn).
-   * **Mavericks and Yosemite users must install the latest Beta Release at this time**
-1. Click *Install*.
+1. Type your password to allow the installation process to complete, and click *OK*.
 1. Click *Launch* after the installation is finished.
-1. Enter your password and click *OK* if Tunnelblick asks to *Repair ownership/permissions*.
+1. Click *I have configuration files*.
 1. Download one of these unified OpenVPN profiles:
 {% for client in openvpn_clients %}
    * [{{ client }}](/openvpn/{{ client }}/{{ openvpn_direct_profile_filename }})
 {% endfor %}
-1. Click the *Open configuration folder* button on the *Welcome to Tunnelblick* screen.
-1. Drag and drop the downloaded `{{ openvpn_direct_profile_filename }}` file to the folder that was opened. You may need to enter your password in order to authorize Finder to copy the file to this location.
-1. Look for the Tunnelblick icon in your menu bar. Click on it, and choose *Connect*. You will see an animation while the connection is being established. You can also click on the icon and choose *Details* to see a log of what is happening.
-1. Success! You can verify that your traffic is being routed properly by visiting the Tor Project's check page, [Are you using Tor?](https://check.torproject.org/) It should say *Your IP address appears to be: {{ streisand_ipv4_address }}*.
+   * *[Alternate profiles](#sslh-profiles) are available if you are on a network that only allows access to ports `80` and `443`.*
+   * *[UDP profiles](#udp-profiles) are also available.*
+1. Double-click the OpenVPN profile.
+1. You will be asked to choose whether the profile should be available for all users or only the current user. After making your selection, you will be asked to enter your password.
+1. Look for the Tunnelblick icon in your menu bar. Click on it, and choose *Connect*.
+1. Success! You can verify that your traffic is being routed properly by [looking up your IP address on Google](https://encrypted.google.com/search?hl=en&q=ip%20address). It should say *Your public IP address is {{ streisand_ipv4_address }}*.
 
 <a name="linux"></a>
 ### Linux ###
@@ -63,11 +66,19 @@ For security reasons, OpenVPN clients typically have their own unique certificat
 {% for client in openvpn_clients %}
    * [{{ client }}](/openvpn/{{ client }}/{{ openvpn_direct_profile_filename }})
 {% endfor %}
+   * *[Alternate profiles](#sslh-profiles) are available if you are on a network that only allows access to ports `80` and `443`.*
+   * *[UDP profiles](#udp-profiles) are also available.*
 1. Copy the downloaded `{{ openvpn_direct_profile_filename }}` file to the location of your choice. */etc/openvpn/* is a decent option.
+1. On some distributions, the pushed DHCP DNS option from the OpenVPN server will be ignored. This means that your DNS queries will still be routed through your ISP's servers which makes them vulnerable to what is known as a DNS leak.
+   * You can test whether or not your DNS is leaking [here](https://dnsleaktest.com/).
+   * You can ensure that the correct DNS servers are used by adding the following lines to the top of the `{{ openvpn_stunnel_profile_filename }}` file:
+     * `script-security 2`
+     * `up /etc/openvpn/update-resolv-conf`
+     * `down /etc/openvpn/update-resolv-conf`
 1. Execute OpenVPN, and pass it the .ovpn profile as an option.
 
    `sudo openvpn {{ openvpn_direct_profile_filename }}`
-1. Success! You can verify that your traffic is being routed properly by visiting the Tor Project's check page, [Are you using Tor?](https://check.torproject.org/) It should say *Your IP address appears to be: {{ streisand_ipv4_address }}*.
+1. Success! You can verify that your traffic is being routed properly by [looking up your IP address on Google](https://encrypted.google.com/search?hl=en&q=ip%20address). It should say *Your public IP address is {{ streisand_ipv4_address }}*.
 
 <a name="linux-ubuntu"></a>
 ### Linux (Ubuntu) ###
@@ -94,8 +105,10 @@ It's preferable to configure Ubuntu using the OpenVPN plugin for NetworkManager.
 1. Click the *Advanced* button.
 1. Go to the *General* tab.
    * Check *Use custom gateway port* and enter `{{ openvpn_port }}` as its value.
+     * Port `443` is available as an alternative if you are on a network that only allows access to the two standard HTTP ports.
+     * You can also use port `{{ openvpn_port_udp }}` for a UDP connection.
    * Check *Use LZO data compression*.
-   * Check *Use a TCP connection*.
+   * Check *Use a TCP connection* unless you have chosen to use the UDP port.
 1. Go to the *Security* tab.
    * Select `{{ openvpn_cipher }}` as the *Cipher*.
    * Select `{{ openvpn_auth_digest }}` as the *HMAC Authentication*.
@@ -107,7 +120,7 @@ It's preferable to configure Ubuntu using the OpenVPN plugin for NetworkManager.
    * Click *OK*.
 1. Click *Save...*
 1. Select the VPN in the left-hand menu, and flip the switch to *ON*. You can also enable/disable the VPN by clicking on the WiFi/Network icon in the menu bar, scrolling to *VPN Connections*, and clicking on its name.
-1. Success! You can verify that your traffic is being routed properly by visiting the Tor Project's check page, [Are you using Tor?](https://check.torproject.org/) It should say *Your IP address appears to be: {{ streisand_ipv4_address }}*.
+1. Success! You can verify that your traffic is being routed properly by [looking up your IP address on Google](https://encrypted.google.com/search?hl=en&q=ip%20address). It should say *Your public IP address is {{ streisand_ipv4_address }}*.
 
 <a name="android"></a>
 ### Android ###
@@ -116,6 +129,8 @@ It's preferable to configure Ubuntu using the OpenVPN plugin for NetworkManager.
 {% for client in openvpn_clients %}
    * [{{ client }}](/openvpn/{{ client }}/{{ openvpn_direct_profile_filename }})
 {% endfor %}
+   * *[Alternate profiles](#sslh-profiles) are available if you are on a network that only allows access to ports `80` and `443`.*
+   * *[UDP profiles](#udp-profiles) are also available.*
 1. Copy the `{{ openvpn_direct_profile_filename }}` file to your phone.
 1. Launch OpenVPN for Android.
 1. Tap the folder icon in the lower-right of the screen.
@@ -123,18 +138,7 @@ It's preferable to configure Ubuntu using the OpenVPN plugin for NetworkManager.
 1. Tap the save icon (floppy disk) in the lower-right of the screen after the import is complete.
 1. Tap the profile.
 1. Accept the Android VPN connection warning.
-1. Success! You can verify that your traffic is being routed properly by visiting the Tor Project's check page, [Are you using Tor?](https://check.torproject.org/) It should say *Your IP address appears to be: {{ streisand_ipv4_address }}*.
-
-Firefox for Android has a DNS resolution [bug](https://bugzilla.mozilla.org/show_bug.cgi?id=947801) that affects VPN users who are running Android 4.4. The following workaround ensures that lookups can be performed successfully, even if you remain connected to the OpenVPN server for an extended period of time.
-
-#### Configuring Firefox for Android to use the Dante SOCKS server ####
-1. Open Firefox.
-1. Type `about:config` into the address bar and tap the *Go* button on your keyboard.
-1. Type `proxy` into the search box.
-1. Set the value of *network.proxy.socks* to `10.8.0.1`.
-1. Set the value of *network.proxy.socks\_port* to `1080`.
-1. Set the value of *network.proxy.socks\_remote\_dns* to `true`.
-1. Set the value of *network.proxy.type* to `1`.
+1. Success! You can verify that your traffic is being routed properly by [looking up your IP address on Google](https://encrypted.google.com/search?hl=en&q=ip%20address). It should say *Your public IP address is {{ streisand_ipv4_address }}*.
 
 <a name="ios"></a>
 ### iOS ###
@@ -143,10 +147,24 @@ Firefox for Android has a DNS resolution [bug](https://bugzilla.mozilla.org/show
 {% for client in openvpn_clients %}
    * [{{ client }}](/openvpn/{{ client }}/{{ openvpn_direct_profile_filename }})
 {% endfor %}
+   * *[Alternate profiles](#sslh-profiles) are available if you are on a network that only allows access to ports `80` and `443`.*
+   * *[UDP profiles](#udp-profiles) are also available.*
 1. Open iTunes on your computer and connect your phone.
 1. Select your phone, click on the *Apps* tab, and find OpenVPN under the *File Sharing* section.
 1. Drag and drop the downloaded `{{ openvpn_direct_profile_filename }}` file into the file sharing window.
 1. OpenVPN on your phone will say that *1 new OpenVPN profile is available for import*.
 1. Tap the green *+* button to import the profile.
 1. Tap the slider to connect to the OpenVPN server.
-1. Success! You can verify that your traffic is being routed properly by visiting the Tor Project's check page, [Are you using Tor?](https://check.torproject.org/) It should say *Your IP address appears to be: {{ streisand_ipv4_address }}*.
+1. Success! You can verify that your traffic is being routed properly by [looking up your IP address on Google](https://encrypted.google.com/search?hl=en&q=ip%20address). It should say *Your public IP address is {{ streisand_ipv4_address }}*.
+
+<a name="sslh-profiles"></a>
+### Alternate unified profiles for access via port 443 ###
+{% for client in openvpn_clients %}
+* [{{ client }}](/openvpn/{{ client }}/{{ openvpn_sslh_profile_filename }})
+{% endfor %}
+
+<a name="udp-profiles"></a>
+### Alternate unified profiles for access via UDP port {{ openvpn_port_udp }} ###
+{% for client in openvpn_clients %}
+* [{{ client }}](/openvpn/{{ client }}/{{ openvpn_direct_udp_profile_filename }})
+{% endfor %}

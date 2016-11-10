@@ -7,7 +7,7 @@ openvpn_mirror_href_base: "/mirror/openvpn"
 openvpn_samuli_seppanen_key_id: "0xC29D97ED198D22A3"
 openvpn_samuli_seppanen_expected_fingerprint: "Key fingerprint = 0330 0E11 FED1 6F59 715F  9996 C29D 97ED 198D 22A3"
 
-openvpn_version: "2.3.4"
+openvpn_version: "2.3.12"
 openvpn_base_download_url: "http://swupdate.openvpn.org/community/releases"
 
 openvpn_source_filename: "openvpn-{{ openvpn_version }}.tar.gz"
@@ -17,14 +17,14 @@ openvpn_source_sig_href: "{{ openvpn_mirror_href_base }}/{{ openvpn_source_sig_f
 openvpn_source_url: "{{ openvpn_base_download_url }}/{{ openvpn_source_filename }}"
 openvpn_source_sig_url: "{{ openvpn_base_download_url }}/{{ openvpn_source_sig_filename }}"
 
-openvpn_windows32_installer_filename: "openvpn-install-{{ openvpn_version }}-I002-i686.exe"
+openvpn_windows32_installer_filename: "openvpn-install-{{ openvpn_version }}-I001-i686.exe"
 openvpn_windows32_installer_sig_filename: "{{ openvpn_windows32_installer_filename }}.asc"
 openvpn_windows32_installer_href: "{{ openvpn_mirror_href_base }}/{{ openvpn_windows32_installer_filename }}"
 openvpn_windows32_installer_sig_href: "{{ openvpn_mirror_href_base }}/{{ openvpn_windows32_installer_sig_filename }}"
 openvpn_windows32_installer_url: "{{ openvpn_base_download_url }}/{{ openvpn_windows32_installer_filename }}"
 openvpn_windows32_installer_sig_url: "{{ openvpn_base_download_url }}/{{ openvpn_windows32_installer_sig_filename }}"
 
-openvpn_windows64_installer_filename: "openvpn-install-{{ openvpn_version }}-I002-x86_64.exe"
+openvpn_windows64_installer_filename: "openvpn-install-{{ openvpn_version }}-I601-x86_64.exe"
 openvpn_windows64_installer_sig_filename: "{{ openvpn_windows64_installer_filename }}.asc"
 openvpn_windows64_installer_href: "{{ openvpn_mirror_href_base }}/{{ openvpn_windows64_installer_filename }}"
 openvpn_windows64_installer_sig_href: "{{ openvpn_mirror_href_base }}/{{ openvpn_windows64_installer_sig_filename }}"
@@ -40,18 +40,9 @@ openvpn_download_urls:
   - "{{ openvpn_windows64_installer_sig_url }}"
 
 # OS X
-tunnelblick_version: "3.3.4"
-tunnelblick_filename: "Tunnelblick_{{ tunnelblick_version }}.dmg"
+tunnelblick_version: "3.6.8"
+tunnelblick_build: "4625"
+tunnelblick_filename: "Tunnelblick_{{ tunnelblick_version }}_build_{{ tunnelblick_build }}.dmg"
 tunnelblick_href: "{{ openvpn_mirror_href_base }}/{{ tunnelblick_filename }}"
-tunnelblick_url: "http://softlayer-ams.dl.sourceforge.net/project/tunnelblick/All%20files/{{ tunnelblick_filename }}"
-tunnelblick_checksum: "c14e4b2d4e30679851de7701c8a0b3167158c5ce029c59b49e49eb58946de913"
-
-tunnelblick_beta_version: "3.4beta30"
-tunnelblick_beta_filename: "Tunnelblick_{{ tunnelblick_beta_version }}.dmg"
-tunnelblick_beta_href: "{{ openvpn_mirror_href_base }}/{{ tunnelblick_beta_filename }}"
-tunnelblick_beta_url: "http://softlayer-ams.dl.sourceforge.net/project/tunnelblick/All%20files/{{ tunnelblick_beta_filename }}"
-tunnelblick_beta_checksum: "dbd8df4c29b7ec742dde4bfee9ba8be8c2ac4fb5ff2ab7ac7f40e6b7214677ff"
-
-tunnelblick_download_urls:
-  - { url: "{{ tunnelblick_url }}",      checksum: "{{ tunnelblick_checksum }}" }
-  - { url: "{{ tunnelblick_beta_url }}", checksum: "{{ tunnelblick_beta_checksum }}" }
+tunnelblick_url: "https://tunnelblick.net/release/{{ tunnelblick_filename }}"
+tunnelblick_checksum: "sha256:b7df41b116c0bce18101a0574ff35099ccaa944abb9db3e505b32a1068d5d5f1"
